@@ -30,12 +30,12 @@ namespace FilmAPI.Services.Characters
         // Method to retrieve a Character by its ID from the database asynchronously, including its associated Movies
         public async Task<Character> GetByIdAsync(int id)
         {
+            if (!await CharacterExistsAsync(id))
+                throw new EntityNotFoundException(nameof(Character), id);
+
             var character = await _context.Characters.Where(c => c.Id == id)
                 .Include(c => c.Movies)
                 .FirstAsync();
-
-            if (character is null)
-                throw new EntityNotFoundException(nameof(character), id);
 
             return character;
         }
@@ -53,33 +53,29 @@ namespace FilmAPI.Services.Characters
             return obj;
         }
 
-        // Method to update the list of Movies associated with a Character in the database asynchronously
         public async Task UpdateMoviesAsync(int characterId, int[] movieIds)
         {
-            var character = await _context.Characters
-                .Include(c => c.Movies)
-                .FirstOrDefaultAsync(c => c.Id == characterId);
+            if (movieIds.Length > 5)
+                throw new EntityValidationException("A Character can only have 5 movies.");
 
-            if (character != null)
-            {
-                // Clear the existing Movies associated with the Character
-                character.Movies.Clear();
-
-                foreach (int id in movieIds)
-                {
-                    if (!await MovieExistsAsync(id))
-                        throw new EntityNotFoundException(nameof(Movie), id);
-
-                    var movie = await _context.Movies.FindAsync(id);
-                    character.Movies.Add(movie);
-                }
-
-                await _context.SaveChangesAsync();
-            }
-            else
-            {
+            if (!await CharacterExistsAsync(characterId))
                 throw new EntityNotFoundException(nameof(Character), characterId);
+
+            var character = await _context.Characters
+             .Include(c => c.Movies)
+             .FirstOrDefaultAsync(c => c.Id == characterId);
+
+            character.Movies.Clear();
+
+            foreach (int id in movieIds)
+            {
+                if (!await MovieExistsAsync(id))
+                    throw new EntityNotFoundException(nameof(Movie), id);
+
+                var movie = await _context.Movies.FindAsync(id);
+                character.Movies.Add(movie);
             }
+            await _context.SaveChangesAsync();
         }
 
         // Method to delete a Character from the database asynchronously
@@ -93,7 +89,6 @@ namespace FilmAPI.Services.Characters
                 .FirstAsync();
 
             // Clear the Movies associated with the Character and then remove the Character
-            //character.Movies.Clear();
             _context.Characters.Remove(character);
             await _context.SaveChangesAsync();
         }
@@ -117,32 +112,7 @@ namespace FilmAPI.Services.Characters
         }
 
 
-        //public async Task UpdateMoviesAsync(int characterId, int[] movieIds)
-        //{
-        //    if (movieIds.Length > 5)
-        //        throw new EntityValidationException("A Character can only have 5 movies.");
 
-        //    if (!await CharacterExistsAsync(characterId))
-        //        throw new EntityNotFoundException(nameof(Character), characterId);
-
-        //    var character = await _context.Characters.FindAsync(characterId);
-
-        //    var movies = new List<Movie>();
-        //    character.Movies.Clear();
-
-        //    foreach (int id in movieIds)
-        //    {
-        //        if (!await MovieExistsAsync(id))
-        //            throw new EntityNotFoundException(nameof(Movie), id);
-
-        //        movies.Add(await _context.Movies
-        //            .Where(s => s.Id == id)
-        //            .FirstAsync());
-        //    }
-
-        //    character.Movies = movies;
-        //    await _context.SaveChangesAsync();
-        //}
     }
 
 }

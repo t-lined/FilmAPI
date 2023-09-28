@@ -11,7 +11,5 @@ namespace FilmAPI.Data.DTOs.Character
         public string Gender { get; set; }
         [StringLength(50)]
         public string PictureUrl { get; set; }
-
-        //public int[] Movies { get; set; } // Navigation property
     }
 }

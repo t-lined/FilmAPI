@@ -151,6 +151,12 @@ namespace FilmAPI.Migrations
                             Id = 2,
                             Description = "A superhero film series based on DC Comics",
                             Name = "Wonder Woman"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "A space opera franchise created by George Lucas",
+                            Name = "Star Wars"
                         });
                 });
 

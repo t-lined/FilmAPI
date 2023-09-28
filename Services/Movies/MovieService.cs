@@ -17,10 +17,17 @@ namespace FilmAPI.Services.Movies
         // Method to add a Movie object to the database asynchronously.
         public async Task<Movie> AddAsync(Movie obj)
         {
+            // Check if the FranchiseId is not null and if it references an existing Franchise
+            if (!await FranchiseExistsAsync(obj.FranchiseId.Value))
+            {
+                throw new EntityNotFoundException(nameof(Franchise), obj.FranchiseId.Value);
+            }
+
             await _context.Movies.AddAsync(obj);
             await _context.SaveChangesAsync();
             return obj;
         }
+
 
         // Method to delete a Movie from the database asynchronously.
         public async Task DeleteAsync(int id)
@@ -59,13 +66,13 @@ namespace FilmAPI.Services.Movies
         // Method to retrieve a Movie by its ID from the database asynchronously, including its associated Characters.
         public async Task<Movie> GetByIdAsync(int id)
         {
+            if (!await MovieExistsAsync(id))
+                throw new EntityNotFoundException(nameof(Movie), id);
+
             var movie = await _context.Movies.
                 Where(m => m.Id == id)
                 .Include(m => m.Characters)
                 .FirstAsync();
-
-            if (movie is null)
-                throw new EntityNotFoundException(nameof(Movie), id);
 
             return movie;
         }
@@ -85,29 +92,26 @@ namespace FilmAPI.Services.Movies
         // Method to update the list of Characters associated with a Movie in the database asynchronously.
         public async Task UpdateCharactersAsync(int movieId, int[] characterIds)
         {
+            if (!await MovieExistsAsync(movieId))
+                throw new EntityNotFoundException(nameof(Movie), movieId);
+
             var movie = await _context.Movies
                 .Include(m => m.Characters)
                 .FirstOrDefaultAsync(c => c.Id == movieId);
 
-            if (movie != null)
+            movie.Characters.Clear();
+
+            foreach (int id in characterIds)
             {
-                movie.Characters.Clear();
+                if (!await CharacterExistsAsync(id))
+                    throw new EntityNotFoundException(nameof(Character), id);
 
-                foreach (int id in characterIds)
-                {
-                    if (!await CharacterExistsAsync(id))
-                        throw new EntityNotFoundException(nameof(Character), id);
-
-                    var character = await _context.Characters.FindAsync(id);
-                    movie.Characters.Add(character);
-                }
-
-                await _context.SaveChangesAsync();
+                var character = await _context.Characters.FindAsync(id);
+                movie.Characters.Add(character);
             }
-            else
-            {
-                throw new EntityNotFoundException(nameof(Movie), movieId);
-            }
+
+            await _context.SaveChangesAsync();
+
         }
 
         // Check if a Movie with the given ID exists in the database asynchronously.
@@ -121,6 +125,17 @@ namespace FilmAPI.Services.Movies
         {
             return await _context.Characters.AnyAsync(c => c.Id == id);
         }
+
+        private async Task<bool> FranchiseExistsAsync(int? franchiseId)
+        {
+            if (franchiseId.HasValue)
+            {
+                return await _context.Franchises.AnyAsync(f => f.Id == franchiseId);
+            }
+
+            return false;
+        }
+
     }
 
 }

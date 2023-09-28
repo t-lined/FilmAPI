@@ -10,8 +10,7 @@
         public string PictureUrl { get; set; }
         public string TrailerUrl { get; set; }
 
-        public int? FranchiseId { get; set; } // Foreign Key
-        //public Franchise Franchise { get; set; } // Navigation property
-        public int[]? Characters { get; set; } // Navigation property
+        public int? FranchiseId { get; set; }
+        public int[]? Characters { get; set; } 
     }
 }

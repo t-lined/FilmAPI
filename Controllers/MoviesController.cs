@@ -96,12 +96,21 @@ namespace FilmAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<MovieDTO>> PostMovie(MoviePostDTO movie)
         {
-            var newMovie = await _movieService.AddAsync(_mapper.Map<Movie>(movie));
+            try
+            {
+                var newMovie = await _movieService.AddAsync(_mapper.Map<Movie>(movie));
 
-            return CreatedAtAction("GetMovie",
-                new { id = newMovie.Id },
-                _mapper.Map<MovieDTO>(newMovie));
+                return CreatedAtAction("GetMovie",
+                    new { id = newMovie.Id },
+                    _mapper.Map<MovieDTO>(newMovie));
+            }
+
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(ex.Message); 
+            }
         }
+
 
         /// <summary>
         /// Updates the characters associated with a movie by ID.

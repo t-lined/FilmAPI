@@ -6,6 +6,6 @@
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public int[] Movies { get; set; } // Navigation property
+        public int[] Movies { get; set; }
     }
 }

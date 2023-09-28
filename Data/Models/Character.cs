@@ -15,6 +15,6 @@ namespace FilmAPI.Models
         public string PictureUrl { get; set; }
         [StringLength(50)]
 
-        public ICollection<Movie>? Movies { get; set; } // Navigation property
+        public ICollection<Movie>? Movies { get; set; }
     }
 }

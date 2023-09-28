@@ -12,7 +12,7 @@ namespace FilmAPI.Data.DTOs.Character
 
         public string PictureUrl { get; set; }
 
-        public int[] Movies { get; set; } // Navigation property
+        public int[] Movies { get; set; }
     }
 }
 

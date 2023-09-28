@@ -16,8 +16,6 @@ namespace FilmAPI.Data.DTOs.Movie
         [StringLength(100)]
         public string TrailerUrl { get; set; }
 
-        public int FranchiseId { get; set; } // Foreign Key
-        //public Franchise Franchise { get; set; } // Navigation property
-        //public int[] Characters { get; set; } // Navigation property
+        public int FranchiseId { get; set; }
     }
 }

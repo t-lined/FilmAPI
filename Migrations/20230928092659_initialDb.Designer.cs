@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FilmAPI.Migrations
 {
     [DbContext(typeof(FilmAPIDbContext))]
-    [Migration("20230928070856_initialDb")]
+    [Migration("20230928092659_initialDb")]
     partial class initialDb
     {
         /// <inheritdoc />
@@ -154,6 +154,12 @@ namespace FilmAPI.Migrations
                             Id = 2,
                             Description = "A superhero film series based on DC Comics",
                             Name = "Wonder Woman"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "A space opera franchise created by George Lucas",
+                            Name = "Star Wars"
                         });
                 });
 

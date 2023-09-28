@@ -18,9 +18,9 @@ namespace FilmAPI.Models
         [StringLength(100)]
         public string TrailerUrl { get; set; }
 
-        public int? FranchiseId { get; set; } // Foreign Key
-        public Franchise Franchise { get; set; } // Navigation property
-        public ICollection<Character>? Characters { get; set; } // Navigation property
+        public int? FranchiseId { get; set; } 
+        public Franchise Franchise { get; set; } 
+        public ICollection<Character>? Characters { get; set; } 
     }
 }
 

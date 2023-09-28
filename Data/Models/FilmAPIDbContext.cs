@@ -16,11 +16,6 @@ namespace FilmAPI.Models
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Franchise> Franchises { get; set; }
 
-        //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //        {
-        //            optionsBuilder.UseSqlServer("Data Source = N-NO-01-04-6995\\SQLEXPRESS; Initial Catalog = FilmAPI; Integrated Security = true; Trust Server Certificate = true;");
-        //        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -37,7 +32,8 @@ namespace FilmAPI.Models
             modelBuilder.Entity<Franchise>()
                 .HasData(
                     new Franchise { Id = 1, Name = "Marvel Cinematic Universe", Description = "A series of interconnected superhero films" },
-                    new Franchise { Id = 2, Name = "Wonder Woman", Description = "A superhero film series based on DC Comics" }
+                    new Franchise { Id = 2, Name = "Wonder Woman", Description = "A superhero film series based on DC Comics" },
+                    new Franchise { Id = 3, Name = "Star Wars", Description = "A space opera franchise created by George Lucas" }
                 );
 
             // Seed data for Movie entity

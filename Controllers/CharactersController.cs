@@ -62,8 +62,6 @@ namespace FilmAPI.Controllers
             try
             {
                 var updatedCharacter = await _characterService.UpdateAsync(_mapper.Map<Character>(character));
-
-                //  await _characterService.UpdateMoviesAsync(updatedCharacter.Id, character.Movies);
             }
             catch (EntityNotFoundException ex)
             {
@@ -80,8 +78,6 @@ namespace FilmAPI.Controllers
         public async Task<ActionResult<CharacterDTO>> PostCharacter(CharacterPostDTO character)
         {
             var newCharacter = await _characterService.AddAsync(_mapper.Map<Character>(character));
-
-            //await _characterService.UpdateMoviesAsync(newCharacter.Id, character.Movies);
 
             return CreatedAtAction("GetCharacter",
                 new { id = newCharacter.Id },

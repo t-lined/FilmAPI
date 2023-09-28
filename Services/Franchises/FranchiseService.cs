@@ -29,12 +29,12 @@ namespace FilmAPI.Services.Franchises
         // Method to retrieve a Franchise by its ID from the database asynchronously, including its associated Movies
         public async Task<Franchise> GetByIdAsync(int id)
         {
+            if (!await FranchiseExistsAsync(id))
+                throw new EntityNotFoundException(nameof(Franchise), id);
+
             var franchise = await _context.Franchises.Where(f => f.Id == id)
                 .Include(f => f.Movies)
                 .FirstOrDefaultAsync();
-
-            if (franchise is null)
-                throw new EntityNotFoundException(nameof(Franchise), id);
 
             return franchise;
         }
@@ -78,30 +78,26 @@ namespace FilmAPI.Services.Franchises
         // Method to update the list of Movies associated with a Franchise in the database asynchronously
         public async Task UpdateMoviesAsync(int franchiseId, int[] movieIds)
         {
+            if (!await FranchiseExistsAsync(franchiseId))
+                throw new EntityNotFoundException(nameof(Franchise), franchiseId);
+
             var franchise = await _context.Franchises
                 .Include(c => c.Movies)
                 .FirstOrDefaultAsync(c => c.Id == franchiseId);
 
-            if (franchise != null)
+
+            // Clear the existing Movies associated with the Franchise
+            franchise.Movies.Clear();
+
+            foreach (int id in movieIds)
             {
-                // Clear the existing Movies associated with the Franchise
-                franchise.Movies.Clear();
+                if (!await MovieExistsAsync(id))
+                    throw new EntityNotFoundException(nameof(Movie), id);
 
-                foreach (int id in movieIds)
-                {
-                    if (!await MovieExistsAsync(id))
-                        throw new EntityNotFoundException(nameof(Movie), id);
-
-                    var movie = await _context.Movies.FindAsync(id);
-                    franchise.Movies.Add(movie);
-                }
-
-                await _context.SaveChangesAsync();
+                var movie = await _context.Movies.FindAsync(id);
+                franchise.Movies.Add(movie);
             }
-            else
-            {
-                throw new EntityNotFoundException(nameof(Franchise), franchiseId);
-            }
+            await _context.SaveChangesAsync();
         }
 
         // Method to delete a Franchise from the database asynchronously

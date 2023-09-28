@@ -106,7 +106,8 @@ namespace FilmAPI.Migrations
                 values: new object[,]
                 {
                     { 1, "A series of interconnected superhero films", "Marvel Cinematic Universe" },
-                    { 2, "A superhero film series based on DC Comics", "Wonder Woman" }
+                    { 2, "A superhero film series based on DC Comics", "Wonder Woman" },
+                    { 3, "A space opera franchise created by George Lucas", "Star Wars" }
                 });
 
             migrationBuilder.InsertData(
