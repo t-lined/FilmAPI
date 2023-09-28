@@ -58,6 +58,7 @@ namespace FilmAPI.Services.Franchises
 
             var charactersInFranchise = await _context.Characters
                 .Where(c => c.Movies.Any(m => m.FranchiseId == id))
+                .Include(c => c.Movies)
                 .ToListAsync();
 
             return charactersInFranchise;

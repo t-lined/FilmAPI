@@ -27,6 +27,7 @@ namespace FilmAPI.Controllers
         /// <summary>
         /// Gets a list of all characters.
         /// </summary>
+        /// <returns>An action result with a collection of character DTOs.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CharacterDTO>>> GetCharacters()
         {
@@ -36,6 +37,9 @@ namespace FilmAPI.Controllers
         /// <summary>
         /// Gets a character by ID.
         /// </summary>
+        /// <param name="id">The ID of the character to retrieve.</param>
+        /// <returns>An action result with a character DTO.</returns>
+        /// <exception cref="EntityNotFoundException">Thrown when the requested character is not found.</exception>
         [HttpGet("{id}")]
         public async Task<ActionResult<CharacterDTO>> GetCharacter(int id)
         {
@@ -52,6 +56,10 @@ namespace FilmAPI.Controllers
         /// <summary>
         /// Updates an existing character.
         /// </summary>
+        /// <param name="id">The ID of the character to update.</param>
+        /// <param name="character">The character data for the update.</param>
+        /// <returns>An action result indicating success or failure.</returns>
+        /// <exception cref="EntityNotFoundException">Thrown when the requested character is not found.</exception>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCharacter(int id, CharacterPutDTO character)
         {
@@ -74,6 +82,8 @@ namespace FilmAPI.Controllers
         /// <summary>
         /// Creates a new character.
         /// </summary>
+        /// <param name="character">The character data for the creation.</param>
+        /// <returns>An action result with the created character DTO.</returns>
         [HttpPost]
         public async Task<ActionResult<CharacterDTO>> PostCharacter(CharacterPostDTO character)
         {
@@ -81,12 +91,17 @@ namespace FilmAPI.Controllers
 
             return CreatedAtAction("GetCharacter",
                 new { id = newCharacter.Id },
-               _mapper.Map<CharacterDTO>(newCharacter));
+                _mapper.Map<CharacterDTO>(newCharacter));
         }
 
         /// <summary>
         /// Updates the movies associated with a character.
         /// </summary>
+        /// <param name="id">The ID of the character to update movies for.</param>
+        /// <param name="movies">An array of movie IDs to associate with the character.</param>
+        /// <returns>An action result indicating success or failure.</returns>
+        /// <exception cref="EntityNotFoundException">Thrown when the requested character is not found.</exception>
+        /// <exception cref="EntityValidationException">Thrown when there is an issue with entity validation.</exception>
         [HttpPut("{id}/movies")]
         public async Task<IActionResult> UpdateMovies(int id, [FromBody] int[] movies)
         {
@@ -108,6 +123,9 @@ namespace FilmAPI.Controllers
         /// <summary>
         /// Deletes a character by ID.
         /// </summary>
+        /// <param name="id">The ID of the character to delete.</param>
+        /// <returns>An action result indicating success or failure.</returns>
+        /// <exception cref="EntityNotFoundException">Thrown when the requested character is not found.</exception>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCharacter(int id)
         {
@@ -122,4 +140,5 @@ namespace FilmAPI.Controllers
             }
         }
     }
+
 }
